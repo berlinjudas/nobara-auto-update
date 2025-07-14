@@ -1,51 +1,51 @@
 # Nobara Linux Auto Update Script
 
-Ein automatisches Update-Script für Nobara Linux, das sowohl System-Pakete über `nobara-sync` als auch Flatpak-Anwendungen (System und User) aktualisiert und eine Desktop-Benachrichtigung sendet.
+An automatic update script for Nobara Linux that updates both system packages via `nobara-sync` and Flatpak applications (System and User) and sends desktop notifications.
 
 ## Features
 
-- 🔄 Automatische Updates von Nobara System-Paketen über `nobara-sync`
-- 📦 Automatische Updates von System- und User-Flatpaks
-- 📝 Detaillierte Logging-Funktionalität
-- 🔔 Desktop-Benachrichtigungen nach dem Update
-- ⚡ Wird automatisch beim Systemstart ausgeführt
-- 🛡️ Läuft sicher als root mit korrekter User-Erkennung
+- 🔄 Automatic updates of Nobara system packages via `nobara-sync`
+- 📦 Automatic updates of System and User Flatpaks
+- 📝 Detailed logging functionality
+- 🔔 Desktop notifications after updates
+- ⚡ Runs automatically on system startup
+- 🛡️ Runs safely as root with correct user detection
 
 ## Installation
 
-### 1. Script herunterladen
+### 1. Download script
 
 ```bash
-# Klonen Sie das Repository
-git clone https://github.com/IHR_USERNAME/nobara-auto-update.git
+# Clone the repository
+git clone https://github.com/berlinjudas/nobara-auto-update.git
 cd nobara-auto-update
 
-# Oder laden Sie das Script direkt herunter
-wget https://raw.githubusercontent.com/IHR_USERNAME/nobara-auto-update/main/nobara-update-with-flatpak.sh
+# Or download the script directly
+wget https://raw.githubusercontent.com/berlinjudas/nobara-auto-update/main/nobara-update-with-flatpak.sh
 ```
 
-### 2. Script installieren
+### 2. Install script
 
 ```bash
-# Script ausführbar machen
+# Make script executable
 chmod +x nobara-update-with-flatpak.sh
 
-# Script nach /usr/local/bin kopieren
+# Copy script to /usr/local/bin
 sudo cp nobara-update-with-flatpak.sh /usr/local/bin/
 
-# Berechtigung setzen
+# Set permissions
 sudo chmod +x /usr/local/bin/nobara-update-with-flatpak.sh
 ```
 
-### 3. Systemd Service erstellen
+### 3. Create systemd service
 
-Erstellen Sie einen systemd Service, der beim Systemstart ausgeführt wird:
+Create a systemd service that runs on system startup:
 
 ```bash
 sudo nano /etc/systemd/system/nobara-auto-update.service
 ```
 
-Fügen Sie folgenden Inhalt ein:
+Add the following content:
 
 ```ini
 [Unit]
@@ -64,53 +64,73 @@ StandardError=journal
 WantedBy=multi-user.target
 ```
 
-### 4. Service aktivieren
+### 4. Enable service
 
 ```bash
-# Systemd neu laden
+# Reload systemd
 sudo systemctl daemon-reload
 
-# Service aktivieren (wird automatisch beim Systemstart ausgeführt)
+# Enable service (will run automatically on system startup)
 sudo systemctl enable nobara-auto-update.service
 
-# Status überprüfen
+# Check status
 sudo systemctl status nobara-auto-update.service
 ```
 
-## Manueller Test
+## Manual testing
 
-Sie können das Script manuell testen:
+You can test the script manually:
 
 ```bash
-# Als root ausführen
+# Run as root
 sudo /usr/local/bin/nobara-update-with-flatpak.sh
 
-# Log-Datei anzeigen (der Pfad wird am Ende des Scripts ausgegeben)
+# View log file (path is displayed at the end of the script)
 cat /tmp/nobara-update-YYYYMMDD-HHMMSS.log
 ```
 
-## Logs anzeigen
+## View logs
 
 ```bash
-# Service-Logs anzeigen
+# Show service logs
 sudo journalctl -u nobara-auto-update.service
 
-# Nächste Ausführung nach Neustart überprüfen
+# Check next execution after reboot
 sudo systemctl status nobara-auto-update.service
 ```
 
-## Deinstallation
+## Troubleshooting
 
-```bash
-# Service stoppen und deaktivieren
-sudo systemctl disable nobara-auto-update.service
+### Script doesn't run
 
-# Service-Datei entfernen
-sudo rm /etc/systemd/system/nobara-auto-update.service
+1. Check permissions:
+   ```bash
+   ls -la /usr/local/bin/nobara-update-with-flatpak.sh
+   ```
 
-# Script entfernen
-sudo rm /usr/local/bin/nobara-update-with-flatpak.sh
+2. Test service execution:
+   ```bash
+   sudo systemctl start nobara-auto-update.service
+   sudo journalctl -u nobara-auto-update.service -f
+   ```
 
-# Systemd neu laden
-sudo systemctl daemon-reload
-```
+### No notifications
+
+1. Check if the correct user is detected:
+   ```bash
+   sudo /usr/local/bin/nobara-update-with-flatpak.sh
+   # Look for "Real user:" in the log file
+   ```
+
+2. Test notification manually:
+   ```bash
+   notify-send "Test" "This is a test"
+   ```
+
+## License
+
+MIT License - See LICENSE file for details.
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
